@@ -1,0 +1,28 @@
+Package: DynBalancing
+Title: Estimating the Effects of Dynamic Treatments with Panel Data.
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Davide",
+           family = "Viviano",
+           role = c("aut", "cre"),
+           email = "dviviano@ucsd.edu",
+           comment = structure("https://orcid.org/0000-0001-8567-9670", .Names = "ORCID"))
+Description: The package implements methods to estimate treatment effects over time based on the paper "Dynamic covariate balancing: estimating treatment effects over time" (Viviano and Bradic, 2021). 
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports:
+	glmnet (>= 2.0.18),
+	dplyr,
+        ggplot2 (>= 3.1.0), 
+        panelView (>= 1.0.5),
+        foreach, 
+        doParallel,
+        quadprog (>= 1.5.7)
+RoxygenNote: 7.1.1
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+Depends: 
+    R (>= 2.10)

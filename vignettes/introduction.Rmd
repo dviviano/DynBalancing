@@ -1,0 +1,213 @@
+---
+title: "DynBalancing: an illustration"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>", 
+  fig.height = 5, fig.width = 7, fig.align = "center"
+  
+)
+library(DynBalancing)
+Time_name = 'Time'
+unit_name = 'Unit'
+## Define which covariates to include in the regression
+covariates_names = c(paste0('V', c(1:158)), 'lag1.Value1', 
+                     'lag2.Value1', 'lag3.Value1', 'lag4.Value1')
+outcome_name = 'Y'
+treatment_name = 'D'
+```
+
+## Introduction 
+
+The package DynBalancing implements the inference methods for estimating treatment effect with panel data of the following paper: 
+
+"Viviano, Davide, and Jelena Bradic. "Dynamic covariate balancing: estimating treatment effects over time." arXiv preprint arXiv:2103.01280 (2021)."
+
+The package estimates treatment effects when units are exposed to treatments that change over time. The method estimates the effects of treatment histories, consisting of arbitrary sequences of treatments specified by the user. 
+
+The package works for balanced and unbalanced panels with high-dimensional (and time-varying) covariates. Effects are estimated through penalized regression with dynamic balancing weights.
+
+
+In the regression, by default, all coefficients are penalized, except the ones corresponding to the treatment assignments. Penalization's parameters are chosen via cross-validation.  The user may also specify regularization = F to avoid regularization of the parameters. 
+
+Balancing weights impose balance across different histories to guarantee valid inference. 
+
+Standard errors assume cross-sectionally independent observations. Clustered standard errors can also be computed (see params list). 
+
+
+
+## Illustration  
+
+
+We first discuss estimation of the ATE. We estimate the ATE on the outcome in the last period. 
+
+```{r}
+## Define the inputs 
+Time_name = 'Time'
+unit_name = 'Unit'
+## Define which covariates to include in the regression
+## (Note: fixed effects are not included here and should pass to the argument "fixed_effects")
+covariates_names = c(paste0('V', c(1:158)), 'lag1.Value1', 
+                     'lag2.Value1', 'lag3.Value1', 'lag4.Value1')
+outcome_name = 'Y'
+treatment_name = 'D'
+## Consider the effect over two periods only 
+## Always treated in two periods
+ds1 = c(1,1)
+## Never treated in two periods
+ds2 = c(0,0)
+
+my_first_result = DynBalancing_ATE(panel_example, covariates_names , Time_name, unit_name, outcome_name, treatment_name, 
+                 ds1 = ds1, ds2 = ds2,  
+                 pooled = F, 
+                 fixed_effects = c('region'))
+
+
+
+```
+
+
+After running the regression we can now explore the results. 
+
+```{r}
+my_first_result$summaries
+```
+
+The above table reports the estimated ATE for being under treatment over two consecutive periods, its standard error and the critical quantile to use for a test with size $10\%$ (see below for details). Robust quantiles impose weaker conditions than Gaussian quantiles, but are larger in absolute terms.  
+
+
+
+
+### Pooled regression
+
+By default the R command considers as the main outcome the outcome in the last period of the panel only (in this case of the outcome at time 5). However, we can also consider a pooled regression, with time fixed effects. In such a case, standard errors are automatically clustered at the unit level (same units in different times form a same cluster), unless a larger cluster (e.g., region) is passed to the function. 
+
+```{r}
+## Here Time fixed effect is necessary since regression is pooled
+my_second_result = DynBalancing_ATE(panel_example, covariates_names , Time_name, unit_name, outcome_name, treatment_name, 
+                 ds1 = ds1, ds2 = ds2, 
+                 ## You can run the regression pooled or not pooled. If pooled select a time fixed effect
+                             ## if pooled = F, the regression considers as end-line outcome the last period
+                             pooled  = T, 
+                 fixed_effects = c('region', 'Time'))
+my_second_result$summaries
+```
+
+
+
+## Time varying effects 
+
+The function DynBalancing_History computes treatment effects that vary in the exposure length. For example, it computes the effect of being one, two, three, ... periods under treatment. 
+
+```{r}
+## Look at the 1 to 5 lag effect of the treatment 
+histories_length = c(1:5)
+## consider the case where I am always treated 
+ds1 = rep(1, 5)
+## never treated 
+ds2 = rep(0, 5)
+## Study the effect of the treatment over 2, ..., 5 periods 
+res1 <- DynBalancing_History(panel_example, covariates_names, 
+                             Time_name, unit_name, outcome_name,
+                             treatment_name, ds1, ds2, histories_length = histories_length,  
+                             ## Choose fixed effects 
+                             fixed_effects = c('region'), 
+                             pooled = T, 
+                             ## Optional: run computations in parallel 
+                             params = list(numcores = 6, initial_period = 0))
+
+res1$plots$ATE
+
+```
+
+The plot reports the standard errors with robust quantile (light gray area), and standard errors with Gaussian quantile (dark-gray area). Each element corresponds to the effect of being exposed to treatment since $t$ periods. 
+
+
+
+
+## Additional features
+
+
+
+
+
+### Clustered standard errors 
+
+In applications, we may be concerned with correlations and control for those using clustered standard errors. These are implemented as follows. 
+
+```{r}
+my_third_result = DynBalancing_ATE(panel_example, covariates_names , Time_name, unit_name, outcome_name, treatment_name, 
+                 ds1 = c(1,1), ds2 = c(0,0), 
+                 fixed_effects = c('region'), params = list(cluster_SE = 'region'))
+my_third_result$summaries
+```
+
+
+
+### Plots 
+
+The function DynBalancing_ATE reports imbalance plots of the following form: 
+```{r}
+my_third_result$plots$imbalance1
+```
+
+The plot reports the imbalance, based on the covariate balancing method in the first and second period across all covariates (imbalance for each covariate is rescaled by its standard deviation).
+
+
+We can also plot the ATE
+
+```{r}
+my_third_result$plots$ATE
+```
+
+
+
+
+
+
+
+
+### Additional parameters 
+
+We indicate below a list of some default settings that the user may change. To change the settings pass the params list to the above functions. More options will be added.   
+
+```{r}
+## Examples of params to pass 
+params = list(
+  ## Do regularized regression
+  regularization = T,
+  ## pass identity of final period. If missing, the last period in the panel is considered. 
+  final_period = NA,
+  ## size
+  alpha = 0.1,
+  ## lb for balancing (balancing is lb * sqrt(log(p)/sqrt(n)))
+  lb = 0.0005,
+  ## ub for balancing
+  ub = 2,
+  ## method for estimation either lasso_plain or lasso_subsample
+  method = 'lasso_plain',
+  ## use a robust quantile for CI with chisquared dist
+  robust_quantile = T,
+  ## use open source software
+  open_source = T,
+  ## numcores
+  numcores = 1,
+  ## nfolds for cross validation
+  nfolds = 10,
+  ##cluster_SE pass a string indicating the column of clustering
+  cluster_SE = NA, 
+  ## use function to compute tuning parameters in a fast way 
+  fast_adaptive = F,
+  ## Beginning of the panel to consider 
+  initial_period = 0
+  )
+```
+
+

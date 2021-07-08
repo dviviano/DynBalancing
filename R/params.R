@@ -1,0 +1,97 @@
+## Exctract parameters
+
+exctract_params = function(params, params_default = params_default){
+  alpha = params$alpha
+  if(is.null(alpha)) alpha = params_default$alpha
+  variables_to_plot = params$variables_to_plot
+  if(is.null(variables_to_plot)) variables_to_plot = params_default$variables_to_plot
+  lb = params$lb
+  if(is.null(lb)) lb = params_default$lb
+  ub = params$ub
+  if(is.null(ub))  ub = params_default$ub
+  params_gurobi = params$params_gurobi
+  if(is.null(params_gurobi)) params_gurobi = params_default$params_gurobi
+  debias = params$debias
+  if(is.null(debias)) debias = params_default$debias
+  adaptive_balancing = params$adaptive_balancing
+  if(is.null(adaptive_balancing))   adaptive_balancing = params_default$adaptive_balancing
+  pooled_all = params$pooled_all
+  if(is.null(pooled_all)) pooled_all = params_default$pooled_all
+  method = params$method
+  if(is.null(method)) method = params_default$method
+  robust_quantile = params$robust_quantile
+  if(is.null(robust_quantile)) robust_quantile = params_default$robust_quantile
+  open_source = params$open_source
+  if(is.null(open_source)) open_source = params_default$open_source
+  continuous_treatment = params$continuous_treatment
+  if(is.null(continuous_treatment))  continuous_treatment = params_default$continuous_treatment
+  instrument_name = params$instrument_name
+  if(is.null(instrument_name))   instrument_name = params_default$instrument_name
+  final_period = params$final_period
+  if(is.null(final_period)) final_period = params_default$final_period
+  regularization = params$regularization
+  if(is.null(regularization)) regularization = params_default$regularization
+  numcores = params$numcores
+  if(is.null(numcores)) numcores = params_default$numcores
+  boot = params$boot
+  if(is.null(boot)) boot = params_default$boot
+  balancing = params$balancing
+  if(is.null(balancing)) balancing = params_default$balancing
+  comparison_plot = params$comparison_plot
+  if(is.null(comparison_plot)) comparison_plot = params_default$comparison_plot
+  with_sparsity_plot = params$with_sparsity_plot
+  if(is.null(with_sparsity_plot)) with_sparsity_plot = params_default$with_sparsity_plot
+  nfolds = params$nfolds
+  if(is.null(nfolds)) nfolds = params_default$nfolds
+  histogram_plot = params$histogram_plot
+  if(is.null(histogram_plot)) histogram_plot = params_default$histogram_plot
+  impulse_response = params$impulse_response
+  if(is.null(impulse_response)) impulse_response = params_default$impulse_response
+  cluster_SE = params$cluster_SE
+  if(is.null(cluster_SE)) cluster_SE = params_default$cluster_SE
+  fast_adaptive = params$fast_adaptive
+  if(is.null(fast_adaptive)) fast_adaptive = params_default$fast_adaptive
+  grid_length = params$grid_length
+  if(is.null(grid_length)) grid_length = params_default$grid_length
+  n_beta_nonsparse = params$n_beta_nonsparse
+  if(is.null(n_beta_nonsparse)) n_beta_nonsparse = params_default$n_beta_nonsparse
+  ratio_coefficients = params$ratio_coefficients
+  if(is.null(ratio_coefficients)) ratio_coefficients = params_default$ratio_coefficients
+  lags = params$lags
+  if(is.null(lags)) lags = params_default$lags
+  initial_period = params$initial_period
+  demeaned_fe = params$demeaned_fe
+  if(is.null(params$demeaned_fe)) demeaned_fe = params_default$demeaned_fe
+  pp = list(regularization = regularization,
+            final_period = final_period,
+            alpha = alpha,
+            method = method,
+            variables_to_plot = variables_to_plot,
+            lb = lb, ub = ub,
+            params_gurobi = params_gurobi,
+            debias = debias,
+            adaptive_balancing = adaptive_balancing,
+            pooled_all = pooled_all,
+            robust_quantile = robust_quantile,
+            open_source = open_source,
+            continuous_treatment = continuous_treatment,
+            instrument_name = instrument_name,
+            numcores = numcores,
+            boot = boot,
+            balancing = balancing,
+            comparison_plot = comparison_plot,
+            with_sparsity_plot = with_sparsity_plot,
+            nfolds = nfolds,
+            histogram_plot = histogram_plot,
+            impulse_response = impulse_response,
+            cluster_SE = cluster_SE,
+            fast_adaptive = fast_adaptive,
+            grid_length  = grid_length,
+            n_beta_nonsparse = n_beta_nonsparse,
+            ratio_coefficients = ratio_coefficients,
+            lags = lags,
+            initial_period = initial_period,
+            demeaned_fe =  demeaned_fe
+  )
+  return(pp)
+}
