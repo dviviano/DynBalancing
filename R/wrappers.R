@@ -344,14 +344,14 @@ DynBalancing_ATE  <- function(panel_data,
   summary_plot <- make_summary_plot(res, length(ds1), conservative_quantile, alpha)
   quantile1 = ifelse(conservative_quantile, sqrt(qchisq(1 - alpha,  length(ds1))), qnorm(1 - alpha/2))
   quantile2 = ifelse(conservative_quantile, sqrt(qchisq(1 - alpha,  2* length(ds1))), qnorm(1 - alpha/2))
-  summaries <- c(res$ATE, sqrt(sum(res$variances)),
+  summaries <- c(res$ATE, sum(res$variances),
                  quantile2,  qnorm(1 - alpha/2), 
-                 res$mu_hat[1], sqrt(res$variances[1]),
-                 res$mu_hat[2], sqrt(res$variances[2]),
+                 res$mu_hat[1], res$variances[1],
+                 res$mu_hat[2], res$variances[2],
                  quantile1,  qnorm(1 - alpha/2))
   summaries <- as.data.frame(matrix(summaries, nrow = 1))
-  names(summaries) <- c('ATE', 'SE_ATE', 'Robust_Quantile_ATE', 'Gaussian_Quantile_ATE', 
-                        'Mu1', 'SE_mu1', 'Mu2', 'Variance_mu2',
+  names(summaries) <- c('ATE', 'Var_ATE', 'Robust_Quantile_ATE', 'Gaussian_Quantile_ATE', 
+                        'Mu1', 'Var_mu1', 'Mu2', 'Var_mu2',
                         'Robust_Quantile_mu',  'Gaussian_Quantile_ATE')
   return(list(summaries = summaries,
               imbalances_summaries = list(po_1 = plot_imbalance1$data_imbalance, po2 = plot_imbalance2$data_imbalance),
@@ -461,18 +461,18 @@ DynBalancing_History <- function(panel_data,
                              sort(histories_length, decreasing = F)
                              )
   if(conservative_quantile == F){
-    matrix_of_results <- cbind(ATEs, sqrt(Variances1 + Variances2),
+    matrix_of_results <- cbind(ATEs, Variances1 + Variances2,
                                sapply(sort(histories_length, decreasing = F), function(x) qnorm(1- alpha/2)),
-                               mu1, sqrt(Variances1), mu2, sqrt(Variances2),
+                               mu1, Variances1, mu2, Variances2,
                                sapply(sort(histories_length, decreasing = F), function(x) 1 - alpha/2),
                                sort(histories_length, decreasing = F)
     )
 
   }
   matrix_of_results <- as.data.frame(matrix_of_results)
-  names(matrix_of_results) <- c('ATE', 'SE_ATE', 'Quantile_ATE',
-                                'mu1', 'SE1', 'mu2',
-                                'SE2', 'Quantile_mu',
+  names(matrix_of_results) <- c('ATE', 'Var_ATE', 'Quantile_ATE',
+                                'mu1', 'Var1', 'mu2',
+                                'Var2', 'Quantile_mu',
                                 'Period_length')
 
   time_all <-  sapply(sort(histories_length, decreasing = F), function(x) (x))
@@ -560,17 +560,17 @@ DynBalncing_Het_ATE <- function(panel_data,
   Variances2 <- sapply(store_results, function(x) x$all_results$variances[2])
   mu1 <- sapply(store_results, function(x) x$all_results$mu_hat[1])
   mu2 <- sapply(store_results, function(x) x$all_results$mu_hat[2])
-  matrix_of_results <- cbind(ATEs, sqrt(Variances1 + Variances2),
+  matrix_of_results <- cbind(ATEs, Variances1 + Variances2,
                              sapply(rep(length(ds1), length(final_period)),
                                     function(x) sqrt(qchisq(1 - alpha, 2 * x))),
-                             mu1, sqrt(Variances1), mu2, sqrt(Variances2),
+                             mu1, Variances1, mu2, Variances2,
                              sapply(rep(length(ds1), length(final_period)), function(x) sqrt(qchisq(1 - alpha, x))),
                              final_periods
   )
   matrix_of_results <- as.data.frame(matrix_of_results)
-  names(matrix_of_results) <- c('ATE', 'SE_ATE', 'Conservative_Quantile_ATE',
-                                'mu1', 'SE1', 'SE2',
-                                'Variance2', 'Conservative_quantile_mu',
+  names(matrix_of_results) <- c('ATE', 'Var_ATE', 'Conservative_Quantile_ATE',
+                                'mu1', 'Var1', 'mu2',
+                                'Var2', 'Conservative_quantile_mu',
                                 'Period_length')
 
   return(list(plots = final_results,
