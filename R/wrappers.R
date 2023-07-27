@@ -253,7 +253,7 @@ DynBalancing_ATE  <- function(panel_data,
     dim_saved = 0
     for(j in fixed_effects){
       columns_fe = which(names(panel_data)  == j)
-      matrix_fe <- model.matrix(~ panel_data[, columns_fe] - 1)
+      matrix_fe <- model.matrix(~ as.factor(panel_data[, columns_fe]) - 1)
       dim_saved = dim_saved + dim(matrix_fe)[2]
       data_matrix <- cbind(data_matrix, matrix_fe)
     }
@@ -484,7 +484,8 @@ DynBalancing_History <- function(panel_data,
     final_results = NA
   }
   return(list(plots = final_results,
-              all_results = matrix_of_results))
+              all_results = matrix_of_results, 
+             stored_results = store_results))
   }
 
 
