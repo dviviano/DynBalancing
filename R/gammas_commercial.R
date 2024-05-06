@@ -23,7 +23,7 @@ compute_gamma1 <- function(X1, D1, d_1, params = NA, K_1, tolerance_constraint1 
 
   ## Set parameters for Gurobi
 
-  if(is.na(params)){
+  if(is.na(params)[1]){
     params <- list(IntFeasTol = 1e-9, FeasibilityTol = 1e-9, TimeLimit =2000, Threads = 1, Heuristics=0,Cuts=0)
   }
   ## History for ones
@@ -121,7 +121,7 @@ compute_gammat <- function(gammat_before, XX, d_t, D, params = NA, K_1,  toleran
     } else{
   gammat_minus1 <- gammat_before[, dim(gammat_before)[2]] }
 
-  if(is.na(params)){
+  if(is.na(params)[1]){
     params <- list(IntFeasTol = 1e-9, FeasibilityTol = 1e-9, TimeLimit =2000, Threads = 1, Heuristics=0,Cuts=0)
   }
   subsample <- apply(D, 1, function(x) all(x == d_t))
