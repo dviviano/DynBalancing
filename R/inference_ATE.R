@@ -143,8 +143,8 @@ compute_ATE <- function(Covariates_t, Y_T, Ds, ds1,ds2, Time, params = NA, toler
 
     if(balancing != 'AIPW') warning('Balancing selected has not DR adjustment. Size distortion may occur.')
   }
-  bias1 <- ifelse(is.na(estimator1$bias), 0, estimator1$bias)
-  bias2 <- ifelse(is.na(estimator2$bias), 0, estimator2$bias)
+  bias1 <- ifelse(is.na(estimator1$bias)[1], 0, estimator1$bias)
+  bias2 <- ifelse(is.na(estimator2$bias)[1], 0, estimator2$bias)
   ATE <- estimator1$mu_hat - estimator2$mu_hat - bias1 + bias2
   if(continuous_treatment){
     Variance1 = estimator1$variance
