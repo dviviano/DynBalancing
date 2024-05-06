@@ -71,14 +71,14 @@ compute_estimator <- function(Covariates_t, Y_T, Ds, ds, Time, params = NA, tole
                                               n_beta_nonsparse = n_beta_nonsparse, ratio_coefficients = ratio_coefficients), error = function(e){NA})
 
     }
-    suppressWarnings(if(is.na(gammas_first) == F){break})
+    suppressWarnings(if(is.na(gammas_first)[1] == F){break})
       }
-      suppressWarnings(if(is.na(gammas_first) == F){break})
+      suppressWarnings(if(is.na(gammas_first)[1] == F){break})
     }
-    suppressWarnings(if(is.na(gammas_first) == F){break})
+    suppressWarnings(if(is.na(gammas_first)[1] == F){break})
   }
 
-  suppressWarnings(if(is.na(gammas_first)){  stop('Error: infeasible problem for period 1. Try to increase the ub parameter.') })
+  suppressWarnings(if(is.na(gammas_first)[1]){  stop('Error: infeasible problem for period 1. Try to increase the ub parameter.') })
   previous_component <- 1/length(not_nas[[1]])
   component_mu[1] <- (gammas_first - previous_component)%*%pred_t[[1]]
   ## Sequential estimation
@@ -112,15 +112,15 @@ compute_estimator <- function(Covariates_t, Y_T, Ds, ds, Time, params = NA, tole
                                                n_beta_nonsparse = n_beta_nonsparse, ratio_coefficients = ratio_coefficients), error = function(e){NA})
 
         }
-        suppressWarnings(if(is.na(gammas_tj) == F){break})
+        suppressWarnings(if(is.na(gammas_tj)[1] == F){break})
         }
-        suppressWarnings(if(is.na(gammas_tj) == F){break})
+        suppressWarnings(if(is.na(gammas_tj)[1] == F){break})
       }
-      suppressWarnings(if(is.na(gammas_tj) == F){break})
+      suppressWarnings(if(is.na(gammas_tj)[1] == F){break})
     }
 
 
-      suppressWarnings(if(is.na(gammas_tj)){  stop(paste0('Error: infeasible problem for period ', t,  '. Try to increase the ub parameter.')) })
+      suppressWarnings(if(is.na(gammas_tj)[1]){  stop(paste0('Error: infeasible problem for period ', t,  '. Try to increase the ub parameter.')) })
       keep_gammas[not_nas[[t]],t] <- gammas_tj
       previous_component <- keep_gammas[not_nas[[t]],t-1]/sum(keep_gammas[not_nas[[t]],t-1])
       component_mu[t] <- (keep_gammas[not_nas[[t]],t] - keep_gammas[not_nas[[t]],t-1])%*%pred_t[[t]]
