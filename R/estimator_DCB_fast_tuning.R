@@ -69,10 +69,10 @@ compute_estimator_fast_adaptive <- function(Covariates_t, Y_T, Ds, ds, Time, par
                                               ratio_coefficients = ratio_coefficients), error = function(e){NA})
 
     }
-    suppressWarnings(if(is.na(gammas_first) == F){break})
+    suppressWarnings(if(is.na(gammas_first)[1] == F){break})
   }
 
-  suppressWarnings(if(is.na(gammas_first)){  stop('Error: infeasible problem for period 1. Try to increase the ub parameter.') })
+  suppressWarnings(if(is.na(gammas_first)[1]){  stop('Error: infeasible problem for period 1. Try to increase the ub parameter.') })
   previous_component <- 1/length(not_nas[[1]])
   component_mu[1] <- (gammas_first - previous_component)%*%pred_t[[1]]
   ## Sequential estimation
@@ -104,7 +104,7 @@ compute_estimator_fast_adaptive <- function(Covariates_t, Y_T, Ds, ds, Time, par
                                                ratio_coefficients = ratio_coefficients), error = function(e){NA})
 
         }
-        suppressWarnings(if(is.na(gammas_tj) == F){break})
+        suppressWarnings(if(is.na(gammas_tj)[1] == F){break})
       }
 
       suppressWarnings(if(is.na(gammas_tj)){  stop(paste0('Error: infeasible problem for period ', t,  '. Try to increase the ub parameter.')) })
