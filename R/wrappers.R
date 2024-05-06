@@ -87,7 +87,7 @@ DynBalancing_ATE  <- function(panel_data,
     stop('Method should be either lasso_plain or lasso_subsample. You can remove the penalization by selecting regularization = F.')
   }
 
-  if(is.na(params_gurobi) == F){
+  if(is.na(params_gurobi)[1] == F){
     warning('Params is not the default for the quadratic program. Errors may occur if it is not a list. See help(gurobi) for details.')
   }
 
@@ -166,7 +166,7 @@ DynBalancing_ATE  <- function(panel_data,
 
   ## Instrument for continuous regressor
   Z = c(NA, NA)
-  if(is.na(instrument_name) == F){
+  if(is.na(instrument_name)[1] == F){
     ## First stage
     first_stage = predict(lm(panel_data[, treatment_name] ~. , data =  panel_data[, names(panel_data) %in% c(covariates_names,
                                                                                                              instrument_name,
